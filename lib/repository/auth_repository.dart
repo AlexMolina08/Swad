@@ -22,8 +22,6 @@ class InvalidAuthException implements Exception {
 
 class AuthRepository {
 
-
-
   AuthRepository();
 
   Future<Auth> loginByUserPasswordKey(String user, String password) async {
@@ -36,7 +34,7 @@ class AuthRepository {
     String encriptedPass = utils.encryptPassword(password);
     // obtener la peteicion SOAP
     String request = utils.getSoapRequest(
-        request: SwadRequest.LoginByUserPasswordKey, parameters: [user,encriptedPass,constants.kAppKey]);
+        request: SwadRequest.loginByUserPasswordKey, parameters: [user,encriptedPass,constants.kAppKey]);
 
     // ******** peticion POST a SWAD ********
 

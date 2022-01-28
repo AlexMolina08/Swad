@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/auth_model.dart';
+import 'package:untitled/presentation/home/home.dart';
 import 'package:untitled/presentation/login/background.dart';
 import 'package:untitled/presentation/login/login_form.dart';
 import 'package:untitled/providers/auth_provider.dart';
@@ -20,7 +21,9 @@ class LoginPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      body: Stack(
+      body: (authState is AuthLoaded)
+      ? HomePage()
+      : Stack(
         children: [
           //Background(),
           LoginForm(
@@ -30,14 +33,6 @@ class LoginPage extends ConsumerWidget {
 
               final state = ref.read(authNotifierProvider.notifier)
                   .login("${userController.text}", "${passwordController.text}");
-
-
-              if(state is AuthLoaded){
-                Navigator.pushNamed(context, '/home');
-              }
-
-
-
             },
           ),
           Align(

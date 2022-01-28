@@ -47,14 +47,15 @@ String encryptPassword (String password){
 
 String getSoapRequest({required SwadRequest request , required List<String> parameters}){
 
-  String user = parameters.first;
-  String password = parameters[1];
-  print(password);
   String soapRequest = "";
 
   switch(request){
-    case SwadRequest.LoginByUserPasswordKey :
+    case SwadRequest.loginByUserPasswordKey :
       {
+
+        String user = parameters.first;
+        String password = parameters[1];
+
         soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
        <soapenv:Header/>
        <soapenv:Body>
@@ -70,6 +71,24 @@ String getSoapRequest({required SwadRequest request , required List<String> para
     </soapenv:Envelope>''' ;
       }
       break;
+
+    case SwadRequest.getCourses : {
+
+      String wsKey = parameters.first;
+
+
+
+      soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:getCourses>
+         <!--Optional:-->
+         <wsKey>$wsKey</wsKey>
+      </urn:getCourses>
+   </soapenv:Body>
+</soapenv:Envelope>''';
+    }
+    break;
 
   }
 
