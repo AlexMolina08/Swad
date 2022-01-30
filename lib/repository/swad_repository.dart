@@ -88,6 +88,54 @@ class SwadRepository {
     // devolvemos la lista
     return _courseList;
   }
+
+  Future<String> getCourseDirectories(String courseCode) async{
+    // obtener wskey
+    var ref = read(authNotifierProvider);
+    String wsKey = "";
+
+    Xml2Json xml2json = Xml2Json();
+    var data;
+
+    // Proceder si el usuario está logeado
+    if(ref is AuthLoaded){
+      wsKey = ref.auth.wsKey!;
+      try {
+        // obtener la peteicion SOAP
+        String request = utils.getSoapRequest(
+            request: SwadRequest.getDirectoryTree, parameters: [wsKey,courseCode]);
+        /*** PETICION SOAP ***/
+
+        http.Response response =
+        await http.post(Uri.https(constant.kswad_URL, ""),
+            headers: {
+              'content-type': 'text/xmlc',
+              'SOAPAction': 'https://www.swad.ugr.es/api/#getDirectoryTree'
+            },
+            body: utf8.encode(request));
+
+        String xmlResponse = response.body;
+
+        if (response.statusCode == 200) {
+          //OK
+          xml2json.parse(xmlResponse);
+          var jsonResponse = xml2json.toParker();
+          data = jsonDecode(jsonResponse);
+        } else if (response.statusCode == 500) {
+          throw Exception("SWAD REPOSITORY : getDirectoryTree ha fallado");
+        }
+      } on Exception catch (e) {
+        rethrow;
+      }
+    }
+
+    return data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getDirectoryTreeOutput'].toString() ;
+
+  }
+
+
+
+
 }
 
 // PRUEBAS

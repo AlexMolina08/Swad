@@ -15,3 +15,13 @@ final courseListProvider = FutureProvider<List<Course>>(
     return content;
   },
 );
+
+final directoryTreeProvider = FutureProvider.family<String,String> (
+
+    (ref , courseCode) async {
+      final SwadRepository repo = SwadRepository(ref.read);
+      final String content = await repo.getCourseDirectories(courseCode);
+      return content;
+    }
+
+    );

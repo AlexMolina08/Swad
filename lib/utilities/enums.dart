@@ -4,6 +4,7 @@
 enum SwadRequest{
   loginByUserPasswordKey,
   getCourses,
+  getDirectoryTree
 }
 
 

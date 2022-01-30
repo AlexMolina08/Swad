@@ -21,46 +21,50 @@ class LoginPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      body: (authState is AuthLoaded)
-      ? HomePage()
-      : Stack(
+      body: Stack(
         children: [
           //Background(),
           LoginForm(
             userController: userController,
             passwordController: passwordController,
+            // Boton de login
             loginFunction: () async {
-
-              final state = ref.read(authNotifierProvider.notifier)
-                  .login("${userController.text}", "${passwordController.text}");
+              await ref
+                  .read(authNotifierProvider.notifier)
+                  .login("${userController.text}", "${passwordController.text}")
+                  .whenComplete( () {
+                  if(ref.read(authNotifierProvider) is AuthLoaded)
+                    goToHomePage(context);
+                },
+              );
             },
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 40.0),
-              child: getAuthWidget(context, authState)
-            ),
+                padding: EdgeInsets.symmetric(vertical: 40.0),
+                child: getAuthWidget(context, authState)),
           )
         ],
       ),
     );
   }
+}
 
-  /**
+void goToHomePage(BuildContext context) {
+  Navigator.of(context).pushNamed('/swad');
+}
+
+/**
    * Mostrar widget oportuno en base al estado actual de AuthState
    */
-  Widget getAuthWidget(BuildContext context, AuthState authState) {
-
-    if (authState is AuthLoaded) {
-
-      return Text(authState.auth.toString());
-    }
-    if (authState is AuthLoading) return CircularProgressIndicator();
-
-    if (authState is AuthError) return Text("error al iniciar sesion");
-
-
-    return Text("?");
+Widget getAuthWidget(BuildContext context, AuthState authState) {
+  if (authState is AuthLoaded) {
+    return Text(authState.auth.userFirstname!);
   }
+  if (authState is AuthLoading) return CircularProgressIndicator();
+
+  if (authState is AuthError) return Text("error al iniciar sesion");
+
+  return Text("?");
 }

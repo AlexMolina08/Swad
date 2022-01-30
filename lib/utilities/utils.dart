@@ -1,6 +1,8 @@
 import 'package:crypto/crypto.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'dart:convert';
-import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:untitled/utilities/utils.dart' as utils;
 import 'package:untitled/utilities/constants.dart' as constants;
@@ -90,6 +92,26 @@ String getSoapRequest({required SwadRequest request , required List<String> para
     }
     break;
 
+    // Archivos
+    case SwadRequest.getDirectoryTree :
+    {
+      String wsKey = parameters.first;
+      String courseCode = parameters[1];
+
+      soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:getDirectoryTree>
+         <!--Optional:-->
+         <wsKey>$wsKey</wsKey>
+         <courseCode>$courseCode</courseCode>
+         <groupCode>0</groupCode>
+         <treeCode>1</treeCode>
+      </urn:getDirectoryTree>
+   </soapenv:Body>
+</soapenv:Envelope>''';
+
+    }break;
   }
 
   return soapRequest;
@@ -135,6 +157,11 @@ main() async {
 }
 
 
+GradientColors getRandomColor(List<GradientColors> l ) {
+  var rng = Random();
+  int randomIndex = rng.nextInt(l.length-1);
+  return l[randomIndex];
+}
 
 
 

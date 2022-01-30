@@ -6,8 +6,9 @@
 class Course {
 
   String?  _courseCode ,  _userRole , _shortName , _fullName;
+  String?  _directoryTree ;
 
-  Course( this._courseCode, this._userRole, this._shortName, this._fullName);
+  Course( this._courseCode, this._userRole, this._shortName, this._fullName ) ;
 
   @override
   String toString() {
@@ -44,4 +45,12 @@ class Course {
     _courseCode= json['courseCode'];
   }
 
+
+  String? getDirectoryTree() {
+    return _directoryTree;
+  }
+
+  set directoryTree(String value) {
+    _directoryTree = value;
+  }
 }

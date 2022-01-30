@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  curved_navigation_bar:
+    dependency: "direct main"
+    description:
+      name: curved_navigation_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   device_frame:
     dependency: transitive
     description:
@@ -104,6 +111,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_gradient_colors:
+    dependency: "direct main"
+    description:
+      name: flutter_gradient_colors
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.1"
   flutter_lints:
     dependency: "direct dev"
     description:
