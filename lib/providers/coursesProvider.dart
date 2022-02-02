@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
+import 'package:untitled/models/tree_model.dart';
 import 'package:untitled/providers/auth_provider.dart';
 import 'package:untitled/repository/swad_repository.dart';
 import 'package:untitled/states/auth_state.dart';
@@ -16,11 +17,11 @@ final courseListProvider = FutureProvider<List<Course>>(
   },
 );
 
-final directoryTreeProvider = FutureProvider.family<String,String> (
+final directoryTreeProvider = FutureProvider.family<Dir,String> (
 
     (ref , courseCode) async {
       final SwadRepository repo = SwadRepository(ref.read);
-      final String content = await repo.getCourseDirectories(courseCode);
+      final Dir content = await repo.getCourseDirectories(courseCode);
       return content;
     }
 

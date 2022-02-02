@@ -16,7 +16,12 @@ class LoginForm extends StatefulWidget {
   @override
   State<LoginForm> createState() => _LoginFormState();
 
-  LoginForm({required this.userController, required this.passwordController , required this.loginFunction});
+  LoginForm({required this.userController, required this.passwordController , required this.loginFunction}){
+
+    //!!*** test proposes ***!!
+   userController.text = "@amcr";
+   passwordController.text="84Uyiqun";
+  }
 }
 
 class _LoginFormState extends State<LoginForm> {

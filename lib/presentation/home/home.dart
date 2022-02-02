@@ -22,9 +22,7 @@ class HomePage extends StatelessWidget {
           // obtener lista asignaturas
           AsyncValue<List<Course>> courses = ref.watch(courseListProvider);
           //--
-          AsyncValue<String> directoryTree = ref.watch(
-            directoryTreeProvider("5978"),
-          );
+
           //--
 
           // Comprobar si esta identificado el user

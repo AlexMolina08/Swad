@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
+import 'package:untitled/models/tree_model.dart';
 import 'package:untitled/providers/auth_provider.dart';
 import 'package:untitled/states/auth_state.dart';
 import 'package:xml2json/xml2json.dart';
@@ -8,9 +9,10 @@ import 'package:untitled/utilities/enums.dart';
 import 'package:http/http.dart' as http;
 import 'package:untitled/utilities/constants.dart' as constant;
 import 'dart:convert';
+import 'package:xml/xml.dart';
 
 /**
- * En esta clase se encuentran todas las llamadas a Swad que se pueden hacer
+ * En SwadRepository se encuentran todas las llamadas a Swad que se pueden hacer
  * utilizando la API , exceptuando las de Login / Registro
  * */
 
@@ -21,7 +23,6 @@ class SwadRepository {
   int? numCourses;
 
   SwadRepository(this.read);
-
 
   /**
    *
@@ -37,7 +38,6 @@ class SwadRepository {
 
     if (ref is AuthLoaded) {
       wsKey = ref.auth.wsKey!;
-      print('getcourseList: WSKEY obtenida ( $wsKey )');
 
       try {
         // obtener la peteicion SOAP
@@ -73,54 +73,73 @@ class SwadRepository {
 
     numCourses = int.parse(data['numCourses']);
 
-
     data = data['coursesArray']['item'];
 
     Course c = Course.fromJson(data[0]);
 
     // Convertir la lista en formato JSON a una List<Course> (lista de asignaturas)
-    for(int i = 0 ; i < numCourses! ; ++i) {
-      _courseList.add(
-        Course.fromJson(data[i])
-      );
+    for (int i = 0; i < numCourses!; ++i) {
+      _courseList.add(Course.fromJson(data[i]));
     }
 
-    // devolvemos la lista
+    /// devolver la lista
     return _courseList;
   }
 
-  Future<String> getCourseDirectories(String courseCode) async{
+  Future<Dir> getCourseDirectories(String courseCode) async {
+
     // obtener wskey
     var ref = read(authNotifierProvider);
     String wsKey = "";
 
-    Xml2Json xml2json = Xml2Json();
-    var data;
+    Dir? dirTree;
 
-    // Proceder si el usuario está logeado
-    if(ref is AuthLoaded){
+    // Comprobar si el usuario está logeado
+    if (ref is AuthLoaded) {
       wsKey = ref.auth.wsKey!;
       try {
-        // obtener la peteicion SOAP
+        // obtener la peticion SOAP
         String request = utils.getSoapRequest(
-            request: SwadRequest.getDirectoryTree, parameters: [wsKey,courseCode]);
-        /*** PETICION SOAP ***/
+            request: SwadRequest.getDirectoryTree,
+            parameters: [wsKey, courseCode]);
 
+        /*** PETICION SOAP ***/
         http.Response response =
-        await http.post(Uri.https(constant.kswad_URL, ""),
-            headers: {
-              'content-type': 'text/xmlc',
-              'SOAPAction': 'https://www.swad.ugr.es/api/#getDirectoryTree'
-            },
-            body: utf8.encode(request));
+            await http.post(Uri.https(constant.kswad_URL, ""),
+                headers: {
+                  'content-type': 'text/xmlc',
+                  'SOAPAction': 'https://www.swad.ugr.es/api/#getDirectoryTree'
+                },
+                body: utf8.encode(request));
 
         String xmlResponse = response.body;
 
-        if (response.statusCode == 200) {
-          //OK
-          xml2json.parse(xmlResponse);
-          var jsonResponse = xml2json.toParker();
-          data = jsonDecode(jsonResponse);
+
+        if (response.statusCode == 200) { //OK
+
+          final document = XmlDocument.parse(xmlResponse);
+
+          /// extraer el directoryTree
+          final textual = document
+              .getElement('SOAP-ENV:Envelope')
+              ?.getElement('SOAP-ENV:Body')
+              ?.getElement('swad:getDirectoryTreeOutput')
+              ?.getElement('tree');
+
+          /// pasar el xmlElement con el directoryTree a string
+          var docsTextual = textual?.firstChild.toString();
+
+          /// establecer formato adecuado
+          docsTextual = docsTextual?.replaceAll('&lt;', '<');
+
+          /// convertir el string a un xml
+          final directoryTreeDocument = XmlDocument.parse(docsTextual!);
+
+          /// obtener modelo Dir
+          dirTree = Dir.fromElement(
+            directoryTreeDocument.getElement('tree')!,
+          );
+
         } else if (response.statusCode == 500) {
           throw Exception("SWAD REPOSITORY : getDirectoryTree ha fallado");
         }
@@ -129,11 +148,8 @@ class SwadRepository {
       }
     }
 
-    return data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getDirectoryTreeOutput'].toString() ;
-
+    return dirTree ?? Dir.root();
   }
-
-
 
 
 }
