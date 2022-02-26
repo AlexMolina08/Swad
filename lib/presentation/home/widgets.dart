@@ -80,17 +80,20 @@ CircleAvatar buildCircleAvatar(String? imageUrl) {
  * Devuelve widgets
  */
 
-Widget buildCourseWidget(Course course) {
+Widget buildCourseWidget(Course course , void Function() onTap) {
   final courseColor = GradientColors.yellow;
-  return Container(
-    constraints: BoxConstraints.expand(),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: courseColor,
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      constraints: BoxConstraints.expand(),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: courseColor,
+        ),
       ),
+      child: Text('${course.fullName}'),
     ),
-    child: Text('${course.fullName}'),
   );
 }

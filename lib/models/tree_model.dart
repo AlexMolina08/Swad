@@ -25,6 +25,9 @@ class File extends Document{
   String? _publisher;
   String? _photo;
 
+  String? url;
+
+
   File(this._name, this._code, this._size, this._time, this._license,
       this._publisher, this._photo)
       : super();

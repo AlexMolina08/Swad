@@ -33,3 +33,6 @@ const courseItemColors = [
   GradientColors.purple,
   GradientColors.aqua,
 ];
+
+
+const kNavBarHeight = 60.0;

@@ -1,26 +1,28 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:untitled/providers/page_index_provider.dart';
+import 'package:untitled/utilities/constants.dart' as constants;
 
-class SwadNavigationBar extends StatefulWidget {
+import 'navigation_layer.dart';
+
+class SwadNavigationBar extends ConsumerWidget {
   const SwadNavigationBar({Key? key , required this.onTap}) : super(key: key);
 
   final void Function(int)? onTap; // funcion  que recibe como parametro el index
   // del icon seleccionado
 
   @override
-  _SwadNavigationBarState createState() => _SwadNavigationBarState();
-}
-
-class _SwadNavigationBarState extends State<SwadNavigationBar> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
-        animationDuration: Duration(milliseconds: 300),
-        color: Color(0xffEEA305),
-        items: navigationBarIcons(),
-        height: 60.0,
-        onTap: widget.onTap
+      backgroundColor: Colors.transparent,
+      animationDuration: Duration(milliseconds: 300),
+      color: Color(0xffEEA305),
+      items: navigationBarIcons(),
+      height: constants.kNavBarHeight,
+      onTap: onTap,
+      // obtener el index actual
+      index: ref.watch(pageIndexProvider).index,
     );
   }
 }

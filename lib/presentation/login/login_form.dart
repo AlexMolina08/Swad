@@ -1,6 +1,7 @@
 /**
- * UI del formulario para iniciar sesion en swad
+ * formulario para iniciar sesion
  */
+
 import 'package:flutter/material.dart';
 import 'package:untitled/utilities/constants.dart';
 
@@ -38,7 +39,7 @@ class _LoginFormState extends State<LoginForm> {
             "Swad .",
             style: TextStyle(
               fontSize: 35,
-              color: Color(0xffe6e1e4),
+              color: Colors.orange,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -53,7 +54,7 @@ class _LoginFormState extends State<LoginForm> {
                   right: 70,
                 ),
                 decoration: BoxDecoration(
-                  color: kBackgroundColor,
+                  color: Colors.white,
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(100),
                     bottomRight: Radius.circular(100),
@@ -118,11 +119,12 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       ],
                       shape: BoxShape.circle,
-                      color: Color(0xff645c64)
+                      color: Colors.white ,
+                      border: Border.all(width: .2)
                     ),
                     child: const Icon(
                       Icons.arrow_forward_outlined,
-                      color: Color(0xffe6e1e4),
+                      color: Colors.orange,
                       size: 32,
                     ),
                   ),

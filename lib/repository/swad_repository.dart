@@ -19,8 +19,10 @@ import 'package:xml/xml.dart';
 class SwadRepository {
   final Reader read; // ref.read function
 
+
   List<Course> _courseList = [];
   int? numCourses;
+  String? currentCourseCode;
 
   SwadRepository(this.read);
 
@@ -82,6 +84,9 @@ class SwadRepository {
       _courseList.add(Course.fromJson(data[i]));
     }
 
+    /// establecer por defecto primer curso
+    currentCourseCode = _courseList.first.courseCode;
+
     /// devolver la lista
     return _courseList;
   }
@@ -113,7 +118,7 @@ class SwadRepository {
                 body: utf8.encode(request));
 
         String xmlResponse = response.body;
-
+        print(xmlResponse);
 
         if (response.statusCode == 200) { //OK
 
@@ -135,6 +140,8 @@ class SwadRepository {
           /// convertir el string a un xml
           final directoryTreeDocument = XmlDocument.parse(docsTextual!);
 
+
+
           /// obtener modelo Dir
           dirTree = Dir.fromElement(
             directoryTreeDocument.getElement('tree')!,
@@ -150,6 +157,9 @@ class SwadRepository {
 
     return dirTree ?? Dir.root();
   }
+
+
+
 
 
 }

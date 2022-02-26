@@ -1,6 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:untitled/models/auth_model.dart';
-import 'package:untitled/providers/auth_provider.dart';
 import 'package:untitled/repository/auth_repository.dart';
 import 'package:untitled/states/auth_state.dart';
 

@@ -112,6 +112,24 @@ String getSoapRequest({required SwadRequest request , required List<String> para
 </soapenv:Envelope>''';
 
     }break;
+
+    case SwadRequest.getFile : {
+      String wsKey = parameters.first;
+      String fileCode = parameters[1];
+
+      soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:getFile>
+         <!--Optional:-->
+         <wsKey>$wsKey</wsKey>
+         <fileCode>$fileCode</fileCode>
+      </urn:getFile>
+   </soapenv:Body>
+</soapenv:Envelope>''';
+
+    }break;
+
   }
 
   return soapRequest;
@@ -163,7 +181,13 @@ GradientColors getRandomColor(List<GradientColors> l ) {
   return l[randomIndex];
 }
 
-
+String formatBytes(int bytes, int decimals) {
+  if (bytes <= 0) return "0 B";
+  const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' +
+  suffixes[i];
+}
 
 
 

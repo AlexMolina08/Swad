@@ -4,33 +4,18 @@
  * */
 
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/presentation/courses/courses_page.dart';
 import 'package:untitled/presentation/home/home.dart';
 import 'package:untitled/presentation/search/search_page.dart';
 import 'package:untitled/presentation/user/user_data_page.dart';
 import 'widgets.dart';
+import 'package:untitled/providers/page_index_provider.dart';
 
-/*****************************************************
- *
- * Change notifier y provider respectivo para manejar el estado
- * de la pantalla
- *
- *****************************************************/
-class ScreenIndexNotifier extends ChangeNotifier {
-  int index;
-  ScreenIndexNotifier(this.index);
-  void update(int newIndex) {
-    if (newIndex != index) index = newIndex;
-    notifyListeners();
-  }
-}
+GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
 
-final pageIndexProvider = ChangeNotifierProvider<ScreenIndexNotifier>(
-        (ref) => ScreenIndexNotifier(0));
 
-/*****************************************************/
+
 
 class NavigationLayer extends StatefulWidget {
   const NavigationLayer({Key? key}) : super(key: key);
@@ -42,7 +27,7 @@ class NavigationLayer extends StatefulWidget {
 class _NavigationLayerState extends State<NavigationLayer> {
   int index = 0;
 
-  final GlobalKey<CurvedNavigationBarState> _navigationKey = GlobalKey();
+
   final screens = [
     HomePage(),
     SearchPage(),
@@ -60,18 +45,12 @@ class _NavigationLayerState extends State<NavigationLayer> {
         child: Scaffold(
           extendBody: true,
           backgroundColor: Colors.white,
-          appBar: AppBar(
-            toolbarHeight: 40,
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            //shadowColor: Colors.transparent,
-          ),
           bottomNavigationBar: Consumer(
             builder: (context, ref, child) {
               return SwadNavigationBar(
+                key: globalKey,
                 onTap: (newIndex) {
-                  ref.read(pageIndexProvider).update(newIndex);
+                  ref.watch(pageIndexProvider).update(newIndex);
                 },
               );
             },

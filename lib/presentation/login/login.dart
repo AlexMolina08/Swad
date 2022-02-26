@@ -20,7 +20,7 @@ class LoginPage extends ConsumerWidget {
     final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
-      backgroundColor: kBackgroundColor,
+      //backgroundColor: kBackgroundColor,
       body: Stack(
         children: [
           //Background(),

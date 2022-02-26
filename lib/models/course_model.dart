@@ -10,9 +10,10 @@ class Course {
 
   Course( this._courseCode, this._userRole, this._shortName, this._fullName ) ;
 
+
   @override
   String toString() {
-    return 'Course{userRole: $_userRole, shortName: $_shortName, fullName: $_fullName}';
+    return 'Course{_courseCode: $_courseCode, _userRole: $_userRole, _shortName: $_shortName, _fullName: $_fullName, _directoryTree: $_directoryTree}';
   }
 
   @override
@@ -34,7 +35,6 @@ class Course {
   get shortName => _shortName;
 
   get fullName => _fullName;
-
 
   String? get courseCode => _courseCode;
 
