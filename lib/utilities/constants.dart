@@ -23,6 +23,11 @@ const kHomeNameTextStyle = TextStyle(
   fontWeight: FontWeight.bold
 );
 
+const kSearchAppBarTextStyle = TextStyle(
+  color: Color(0xff000000),
+  fontWeight: FontWeight.normal,
+);
+
 const kPrimaryColor = Color(0xff344955);
 
 // Colores de los items de las asignaturas

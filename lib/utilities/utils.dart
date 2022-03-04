@@ -130,6 +130,29 @@ String getSoapRequest({required SwadRequest request , required List<String> para
 
     }break;
 
+    case SwadRequest.findUsers : {
+
+      String wsKey = parameters.first;
+      String courseCode = parameters[1];
+      String filter = parameters[2];
+      String userRole = parameters[3];
+
+
+      soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:findUsers>
+         <wsKey>$wsKey</wsKey>
+         <courseCode>$courseCode</courseCode>
+         <filter>$filter</filter>
+         <userRole>$userRole</userRole>
+      </urn:findUsers>
+   </soapenv:Body>
+</soapenv:Envelope>''';
+
+
+    }break;
+
   }
 
   return soapRequest;

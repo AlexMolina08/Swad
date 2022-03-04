@@ -53,7 +53,7 @@ class CoursesPage extends ConsumerWidget {
                       flexibleSpace: Container(
                         color: Colors.red,
                       ),
-                      bottom: TabBar(
+                      bottom: const TabBar(
                         tabs: [
                           Tab(icon: Icon(Icons.folder),),
                           Tab(icon: Icon(Icons.folder_shared),),
