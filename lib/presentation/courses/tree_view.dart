@@ -31,13 +31,14 @@ class DirTreeWidget extends StatelessWidget {
         title: Text(root.dirName),
         children: root.documents.map<Widget>((doc) {
           if (doc is Dir) return _buildTiles(doc);
-          if (doc is File)
+          if (doc is File) {
             return FileTile(
               doc,
               () {
                 print(doc.code);
               },
             );
+          }
           return Container();
         }).toList(),
       );

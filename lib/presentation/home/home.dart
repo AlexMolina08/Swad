@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
 import 'package:untitled/presentation/home/widgets.dart';
-import 'package:untitled/presentation/navigationLayer/navigation_layer.dart';
 import 'package:untitled/providers/auth_provider.dart';
 import 'package:untitled/providers/coursesProvider.dart';
 import 'package:untitled/providers/page_index_provider.dart';
@@ -75,12 +74,15 @@ class HomePage extends StatelessWidget {
                             final course = courses[index];
                             return Padding(
                               padding: EdgeInsets.all(3.0),
-                              child: buildCourseWidget(
-                                course,
-                                () {
-                                  ref.watch(courseProvider).update(course);
-                                  ref.watch(pageIndexProvider).update(2);
-                                },
+                              child: Hero(
+                                tag: 'course',
+                                child: buildCourseWidget(
+                                  course,
+                                  () {
+                                    ref.watch(courseProvider).update(course);
+                                    ref.watch(pageIndexProvider).update(2);
+                                  },
+                                ),
                               ),
                             );
                           },

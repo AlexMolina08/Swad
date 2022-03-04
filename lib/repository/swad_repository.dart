@@ -73,16 +73,22 @@ class SwadRepository {
 
     data = data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getCoursesOutput'];
 
+
     numCourses = int.parse(data['numCourses']);
+
 
     data = data['coursesArray']['item'];
 
-    Course c = Course.fromJson(data[0]);
+
+    Course c = Course.fromJson(data);
 
     // Convertir la lista en formato JSON a una List<Course> (lista de asignaturas)
-    for (int i = 0; i < numCourses!; ++i) {
-      _courseList.add(Course.fromJson(data[i]));
-    }
+    if (numCourses! > 1) {
+      for (int i = 0; i < numCourses!; ++i) {
+        _courseList.add(Course.fromJson(data[i]));
+      }
+    }else
+      _courseList.add(Course.fromJson(data));
 
     /// establecer por defecto primer curso
     currentCourseCode = _courseList.first.courseCode;

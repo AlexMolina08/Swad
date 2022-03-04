@@ -19,7 +19,6 @@ final courseListProvider = FutureProvider<List<Course>>(
 );
 
 
-
 final directoryTreeProvider = FutureProvider.family.autoDispose<Dir,String> (
 
     (ref , courseCode) async {
