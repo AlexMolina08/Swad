@@ -1,8 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
+import 'package:untitled/models/find_user_request.dart';
+import 'package:untitled/models/search_response.dart';
 import 'package:untitled/models/tree_model.dart';
 import 'package:untitled/providers/auth_provider.dart';
 import 'package:untitled/states/auth_state.dart';
+import 'package:untitled/states/search_state.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:untitled/utilities/utils.dart' as utils;
 import 'package:untitled/utilities/enums.dart';
@@ -124,7 +127,6 @@ class SwadRepository {
                 body: utf8.encode(request));
 
         String xmlResponse = response.body;
-        print(xmlResponse);
 
         if (response.statusCode == 200) { //OK
 
@@ -166,10 +168,72 @@ class SwadRepository {
 
 
 
+  /// FIND USERS
+
+  Future<SearchState> findUsers(String filter , String userRole,String courseCode) async {
+
+
+    var ref = read(authNotifierProvider);
+    String wsKey = "";
+    Xml2Json xml2json = Xml2Json();
+    var data;
+
+    if (ref is AuthLoaded) {
+      wsKey = ref.auth.wsKey!;
+
+      try {
+        // obtener la peticion SOAP
+        String soapRequest = utils.getSoapRequest(
+            request: SwadRequest.findUsers,
+            parameters: [wsKey, courseCode, filter, userRole]);
+
+        /*** PETICION SOAP ***/
+
+        http.Response response =
+        await http.post(Uri.https(constant.kswad_URL, ""),
+            headers: {
+              'content-type': 'text/xmlc',
+              'SOAPAction': 'https://www.swad.ugr.es/api/#findusers'
+            },
+            body: utf8.encode(soapRequest));
+
+        String xmlResponse = response.body;
+
+        if (response.statusCode == 200) {
+          //OK
+          xml2json.parse(xmlResponse);
+          // obtenemos el String con el JSON de los alumnos encontrados
+          var jsonResponse = xml2json.toParker();
+          data = jsonDecode(jsonResponse);
+          // Solo nos insteresa el campo con la lista de alumnos
+          data = data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getUsersOutput'];
+
+
+        } else if (response.statusCode == 500) {
+          throw Exception("SWAD REPOSITORY : Findusers ha fallado");
+        }
+      } on Exception catch (e) {
+        rethrow;
+      }
+
+      return
+        data['usersArray'] != []
+        ? SearchLoaded(users: data['usersArray']['item'], numUsers: data['numUsers'])
+            : SearchError("nada");
+    }else{
+      return SearchError("Inicia sesión");
+    }
+
+
+
+
+  }
 
 
 }
 
 // PRUEBAS
 
-void main() async {}
+void main() async {
+
+}

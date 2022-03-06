@@ -1,18 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
+import 'package:untitled/models/find_user_request.dart';
 import 'package:untitled/models/tree_model.dart';
-import 'package:untitled/presentation/courses/courses_page.dart';
-import 'package:untitled/providers/auth_provider.dart';
 import 'package:untitled/repository/swad_repository.dart';
 import 'package:flutter/foundation.dart';
 
-// Provider del Swad Repository
+
+
 
 final courseListProvider = FutureProvider<List<Course>>(
   (ref) async {
     final SwadRepository repo = SwadRepository(ref.read);
 
     final content = await repo.getCourseList();
+
 
     return content;
   },
@@ -22,7 +23,7 @@ final courseListProvider = FutureProvider<List<Course>>(
 final directoryTreeProvider = FutureProvider.family.autoDispose<Dir,String> (
 
     (ref , courseCode) async {
-      final SwadRepository repo = SwadRepository(ref.read);
+      final SwadRepository repo = SwadRepository(ref.watch);
       final Dir content = await repo.getCourseDirectories(courseCode);
       return content;
     });

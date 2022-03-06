@@ -129,7 +129,9 @@ String getSoapRequest({required SwadRequest request , required List<String> para
 </soapenv:Envelope>''';
 
     }break;
-
+    /// Buscar un usuario a través de un filtro (cadena de caracteres)
+    ///   En toda la plataforma
+    ///   En un curso
     case SwadRequest.findUsers : {
 
       String wsKey = parameters.first;
@@ -137,6 +139,7 @@ String getSoapRequest({required SwadRequest request , required List<String> para
       String filter = parameters[2];
       String userRole = parameters[3];
 
+      print(wsKey);
 
       soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
    <soapenv:Header/>

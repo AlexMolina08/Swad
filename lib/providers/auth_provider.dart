@@ -3,7 +3,6 @@ import 'package:untitled/providers/auth_notifier.dart';
 import 'package:untitled/states/auth_state.dart';
 
 // Provider de los datos del usuario al iniciar sesión
-
 final authNotifierProvider = StateNotifierProvider<AuthNotifier,AuthState>( (ref){
   return AuthNotifier();
 }

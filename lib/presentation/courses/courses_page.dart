@@ -1,15 +1,9 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/rendering/sliver_persistent_header.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
 import 'package:untitled/presentation/courses/tree_view.dart';
-import 'package:untitled/presentation/home/widgets.dart';
 import 'package:untitled/providers/course_index_provider.dart';
 import 'package:untitled/providers/coursesProvider.dart';
-import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
-import 'widgets.dart';
-import 'package:untitled/utilities/constants.dart' as constants;
 
 class CoursesPage extends ConsumerWidget {
   CoursesPage({
@@ -18,17 +12,10 @@ class CoursesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // obtener la asignatura actualmente seleccionada
-
-    // -- Obtener el codigo y el nombre de la asignatura actual
-    //String code = currentCourseState!.courseCode ?? '00';
-    //String name = currentCourseState.fullName ?? '?';
 
     /// obtener lista asignaturas
     AsyncValue<List<Course>> courses = ref.watch(courseListProvider);
     int currentCourseIndex = ref.watch(courseIndexProvider).index;
-
-    double screenSize = MediaQuery.of(context).size.height;
 
     /// obtener el directory tree de la asignatura actual
     /// watch a directoryTreeProvider para hacer rebuild cuando

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ExploreAppBar extends StatelessWidget {
-  const ExploreAppBar({Key? key}) : super(key: key);
+
+  final void Function(String) onSubmitted;
+
+
+  ExploreAppBar({required this.onSubmitted});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +18,9 @@ class ExploreAppBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             color: Colors.grey.shade200),
         child: TextField(
+
+          onSubmitted: onSubmitted,
+
           cursorColor: Colors.grey.shade500,
           decoration: InputDecoration(
             border: InputBorder.none,
