@@ -4,7 +4,8 @@ import 'package:untitled/repository/swad_repository.dart';
 import 'package:untitled/states/search_state.dart';
 
 
-
-final searchNotifierProvider = StateNotifierProvider<SearchNotifier,SearchState>( (ref) {
+/// Notifier del estado de la búsqueda
+/// autoDispose para eliminar cuando no sea necesitado
+final searchNotifierProvider = StateNotifierProvider.autoDispose <SearchNotifier,SearchState>( (ref) {
   return SearchNotifier(SwadRepository(ref.read));
 });

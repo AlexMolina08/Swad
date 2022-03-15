@@ -51,7 +51,8 @@ class File extends Document{
   }
 
   ///
-  /// eliminar tags XML
+  /// eliminar tags XML innecesarios que no han sido eliminados
+  /// utilizando parse
   ///
   void _removeTags() {
     code = code

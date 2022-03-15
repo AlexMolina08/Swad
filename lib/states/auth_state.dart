@@ -17,6 +17,7 @@ class AuthLoading extends AuthState {
 }
 
 class AuthLoaded extends AuthState {
+
   final Auth auth;
   const AuthLoaded(this.auth);
 

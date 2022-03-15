@@ -139,7 +139,6 @@ String getSoapRequest({required SwadRequest request , required List<String> para
       String filter = parameters[2];
       String userRole = parameters[3];
 
-      print(wsKey);
 
       soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
    <soapenv:Header/>

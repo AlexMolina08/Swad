@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
 import 'package:untitled/models/find_user_request.dart';
-import 'package:untitled/models/search_response.dart';
 import 'package:untitled/models/tree_model.dart';
 import 'package:untitled/providers/auth_provider.dart';
 import 'package:untitled/states/auth_state.dart';
@@ -14,14 +14,13 @@ import 'package:untitled/utilities/constants.dart' as constant;
 import 'dart:convert';
 import 'package:xml/xml.dart';
 
-/**
- * En SwadRepository se encuentran todas las llamadas a Swad que se pueden hacer
- * utilizando la API , exceptuando las de Login / Registro
- * */
+
+
+///En SwadRepository se encuentran todas las llamadas a Swad que se pueden hacer
+///utilizando la API , exceptuando las de Login / Registro
 
 class SwadRepository {
   final Reader read; // ref.read function
-
 
   List<Course> _courseList = [];
   int? numCourses;
@@ -76,12 +75,9 @@ class SwadRepository {
 
     data = data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getCoursesOutput'];
 
-
     numCourses = int.parse(data['numCourses']);
 
-
     data = data['coursesArray']['item'];
-
 
     Course c = Course.fromJson(data);
 
@@ -90,7 +86,7 @@ class SwadRepository {
       for (int i = 0; i < numCourses!; ++i) {
         _courseList.add(Course.fromJson(data[i]));
       }
-    }else
+    } else
       _courseList.add(Course.fromJson(data));
 
     /// establecer por defecto primer curso
@@ -101,7 +97,6 @@ class SwadRepository {
   }
 
   Future<Dir> getCourseDirectories(String courseCode) async {
-
     // obtener wskey
     var ref = read(authNotifierProvider);
     String wsKey = "";
@@ -128,7 +123,8 @@ class SwadRepository {
 
         String xmlResponse = response.body;
 
-        if (response.statusCode == 200) { //OK
+        if (response.statusCode == 200) {
+          //OK
 
           final document = XmlDocument.parse(xmlResponse);
 
@@ -148,13 +144,10 @@ class SwadRepository {
           /// convertir el string a un xml
           final directoryTreeDocument = XmlDocument.parse(docsTextual!);
 
-
-
           /// obtener modelo Dir
           dirTree = Dir.fromElement(
             directoryTreeDocument.getElement('tree')!,
           );
-
         } else if (response.statusCode == 500) {
           throw Exception("SWAD REPOSITORY : getDirectoryTree ha fallado");
         }
@@ -166,13 +159,11 @@ class SwadRepository {
     return dirTree ?? Dir.root();
   }
 
+  ///
+  /// Buscar un usuario en la plataforma
+  ///
 
-
-  /// FIND USERS
-
-  Future<SearchState> findUsers(String filter , String userRole,String courseCode) async {
-
-
+  Future<SearchState> findUsers(SearchRequest request) async {
     var ref = read(authNotifierProvider);
     String wsKey = "";
     Xml2Json xml2json = Xml2Json();
@@ -185,29 +176,23 @@ class SwadRepository {
         // obtener la peticion SOAP
         String soapRequest = utils.getSoapRequest(
             request: SwadRequest.findUsers,
-            parameters: [wsKey, courseCode, filter, userRole]);
+            parameters: [wsKey, request.courseCode, request.filter, request.userRole]);
 
         /*** PETICION SOAP ***/
 
         http.Response response =
-        await http.post(Uri.https(constant.kswad_URL, ""),
-            headers: {
-              'content-type': 'text/xmlc',
-              'SOAPAction': 'https://www.swad.ugr.es/api/#findusers'
-            },
-            body: utf8.encode(soapRequest));
+            await http.post(Uri.https(constant.kswad_URL, ""),
+                headers: {
+                  'content-type': 'text/xmlc',
+                  'SOAPAction': 'https://www.swad.ugr.es/api/#findusers'
+                },
+                body: utf8.encode(soapRequest));
 
         String xmlResponse = response.body;
 
         if (response.statusCode == 200) {
-          //OK
-          xml2json.parse(xmlResponse);
-          // obtenemos el String con el JSON de los alumnos encontrados
-          var jsonResponse = xml2json.toParker();
-          data = jsonDecode(jsonResponse);
-          // Solo nos insteresa el campo con la lista de alumnos
-          data = data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getUsersOutput'];
-
+          /// Ejecutar en segundo plano la conversión del XML
+          data = await compute(parseData,xmlResponse);
 
         } else if (response.statusCode == 500) {
           throw Exception("SWAD REPOSITORY : Findusers ha fallado");
@@ -216,24 +201,40 @@ class SwadRepository {
         rethrow;
       }
 
-      return
-        data['usersArray'] != []
-        ? SearchLoaded(users: data['usersArray']['item'], numUsers: data['numUsers'])
-            : SearchError("nada");
-    }else{
+      // obtener numUsers del json. Si es null , devolver 0
+      String numUsers = data['numUsers'] ?? '0';
+      // obtener el usersArray
+      var usersArray = (int.parse(numUsers) > 0)
+          ? data['usersArray']['item']
+          : data;
+
+      return SearchLoaded(
+              numUsers: int.parse(numUsers),
+              userListResponse: usersArray
+            );
+    } else {
       return SearchError("Inicia sesión");
     }
-
-
-
-
   }
+}
 
 
+dynamic parseData(xmlResponse){
+
+  var data;
+  Xml2Json xml2json = Xml2Json();
+  //OK
+  xml2json.parse(xmlResponse);
+  // obtener el String con el JSON de los alumnos encontrados
+  var jsonResponse = xml2json.toParker();
+  data = jsonDecode(jsonResponse);
+  // campo con lista de los alumnos filtrados
+  data =
+  data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getUsersOutput'];
+
+  return data;
 }
 
 // PRUEBAS
 
-void main() async {
-
-}
+void main() async {}

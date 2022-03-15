@@ -24,13 +24,40 @@ class SearchLoading extends SearchState {
 
 class SearchLoaded extends SearchState {
 
+  final userListResponse;
+  late List<dynamic> users ;
+  final int numUsers;
 
-  final List<dynamic>? users;
-  final String numUsers;
+
+  /// CONSTRUCTOR
+   SearchLoaded({this.userListResponse,required numUsers})
+   /// Inicializar variable con el numero de usuarios encontrados en la búsqueda
+   /// si numUsers es < 0 (ocurre cuando no encuentra matches)
+   /// se inicializa a 0
+   : numUsers = numUsers <= 0 ? 0 : numUsers
+   {
+
+     print("\n\nNº MATCHES : $numUsers\n\n");
+     // a partir del numero de usuarios , construimos la lista
 
 
+     /// Si recibe una lista con más de un elemento , asignar a
+     /// userListResponse
+    if(numUsers > 1 && userListResponse is List<dynamic>) {
+      print("RESPONSE DATA : ${userListResponse.runtimeType.toString()}");
+      users = userListResponse;
+    }
+    /// Si  el numero de users es 0 , devolver lista vacia
+    else if (numUsers <= 0){
+      users = List.empty();
+    }
+    /// Si únicamente hay un elemento inicializar ArrayList users con ese elemento
+    else{
+      users = [userListResponse]; // inicializamos users con un arraylist a 1
+    }
 
-  const SearchLoaded({this.users,required this.numUsers});
+  }
+
 
   @override
   bool operator ==(Object other) =>
@@ -42,6 +69,8 @@ class SearchLoaded extends SearchState {
 
   @override
   int get hashCode => users.hashCode ^ numUsers.hashCode;
+
+
 }
 
 class SearchError extends SearchState {

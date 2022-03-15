@@ -17,7 +17,7 @@ const String kswad_URL = "swad.ugr.es";
 const String kAppKey = 'alexflutter123';
 
 const Color kBackgroundColor = Color(0xff2A2A2A);
-
+ 
 const kHomeNameTextStyle = TextStyle(
   fontSize: 30.0,
   fontWeight: FontWeight.bold

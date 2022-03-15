@@ -91,7 +91,8 @@ class HomePage extends StatelessWidget {
                     },
                     error: (err, stack) => Text('Error $err'),
                     loading: () => const CircularProgressIndicator(
-                        backgroundColor: Color(0xfffaea05)),
+                      backgroundColor: Color(0xfffaea05),
+                    ),
                   ),
                 ],
               );
