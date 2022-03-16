@@ -47,7 +47,7 @@ class _NavigationLayerState extends State<NavigationLayer> {
           backgroundColor: Colors.white,
           bottomNavigationBar: Consumer(
             builder: (context, ref, child) {
-              return SwadNavigationBar(
+              return SwadNavBar(
                 key: globalKey,
                 onTap: (newIndex) {
                   ref.watch(pageIndexProvider).update(newIndex);

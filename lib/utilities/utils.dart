@@ -1,5 +1,4 @@
 import 'package:crypto/crypto.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'dart:convert';
 import 'dart:math';
@@ -206,6 +205,8 @@ GradientColors getRandomColor(List<GradientColors> l ) {
   return l[randomIndex];
 }
 
+/// return the bytes passed into KB,MB,GB,... depending
+/// on
 String formatBytes(int bytes, int decimals) {
   if (bytes <= 0) return "0 B";
   const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
