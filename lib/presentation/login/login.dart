@@ -4,7 +4,7 @@ import 'package:untitled/models/auth_model.dart';
 import 'package:untitled/presentation/home/home.dart';
 import 'package:untitled/presentation/login/background.dart';
 import 'package:untitled/presentation/login/login_form.dart';
-import 'package:untitled/providers/auth_provider.dart';
+import 'package:untitled/providers/auth_providers/auth_provider.dart';
 import 'package:untitled/states/auth_state.dart';
 import 'package:untitled/utilities/constants.dart';
 

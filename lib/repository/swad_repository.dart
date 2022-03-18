@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
 import 'package:untitled/models/find_user_request.dart';
 import 'package:untitled/models/tree_model.dart';
-import 'package:untitled/providers/auth_provider.dart';
+import 'package:untitled/providers/auth_providers/auth_provider.dart';
 import 'package:untitled/states/auth_state.dart';
 import 'package:untitled/states/search_state.dart';
 import 'package:xml2json/xml2json.dart';

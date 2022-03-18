@@ -1,39 +1,68 @@
 ///
 ///
-/// Grid View con los usuarios obtenidos de una búsqueda
-/// Recibe un searchState
+/// Grid View usuarios
+/// Recibe un searchLoaded el un scrollcontroller de su padre
+/// Renderiza 10 usuarios en pantalla, si se llega al final del gridview,
+/// renderizar 10 más
 ///
 ///
 
 import 'package:flutter/material.dart';
 import 'package:untitled/models/user_model.dart';
 import 'package:untitled/states/search_state.dart';
+import 'package:untitled/utilities/constants.dart';
+
 
 class MatchesGrid extends StatefulWidget {
-  final SearchLoaded searchState;
-  const MatchesGrid({
-    required this.searchState,
+
+  SearchLoaded searchResult;
+  int usersGridCount;
+
+  MatchesGrid({
+    required this.searchResult,
+    required this.usersGridCount,
     Key? key,
-  }) : super(key: key);
+  }) : super(key: key) {
+    /// Nº de usersGrids inicialmente.
+    /// si hay menos de los solicitados, inicializar al numero de usuarios
+  }
 
   @override
   State<MatchesGrid> createState() => _MatchesGridState();
 }
 
 class _MatchesGridState extends State<MatchesGrid> {
+  //var usersGridCount; /// Nº de usuarios mostrados por página
+
+
+  @override
+  void initState() {
+    /// comprobar el numero de usuarios para saber si se pueden mostrar
+    /// 18 (kUsersPerPage)
+    if(widget.searchResult.numUsers < kUsersPerPage){
+      setState(() {
+        widget.usersGridCount = widget.searchResult.numUsers;
+      });
+    }else{
+      setState(() {
+        widget.usersGridCount = kUsersPerPage;
+      });
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final double cardHeight = size.height;
     final double cardWidth = size.width;
-    var numUsers;
     List<dynamic> usersMatchedList;
 
     /// si la búsqueda ha sido exitosa , obtener el numero de usuarios
     /// y la lista (puede estar vacía)
 
-    numUsers = widget.searchState.numUsers ?? 0;
-    usersMatchedList = widget.searchState.users;
+    usersMatchedList = widget.searchResult.users;
 
     return usersMatchedList.isEmpty
         ? SliverToBoxAdapter(
@@ -41,7 +70,7 @@ class _MatchesGridState extends State<MatchesGrid> {
           )
         : SliverGrid(
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200.0,
+              maxCrossAxisExtent: 150.0,
               mainAxisSpacing: 10.0,
               crossAxisSpacing: 10.0,
               childAspectRatio: (cardWidth / cardHeight) * 2,
@@ -62,14 +91,12 @@ class _MatchesGridState extends State<MatchesGrid> {
                     aspectRatio: 1,
                     child: user.photoUrl != null
                         ? Padding(
-                      padding: EdgeInsets.all(20.0),
-                          child: Image.network(
-                              user.photoUrl,
-                              fit: BoxFit.contain,
-                              width: cardWidth,
-                              height: cardHeight,
+                            padding: EdgeInsets.all(10.0),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              backgroundImage: NetworkImage(user.photoUrl),
                             ),
-                        )
+                          )
                         : Image(
                             image: AssetImage('resources/no_user_photo.png'),
                             width: cardWidth / 5,
@@ -77,7 +104,7 @@ class _MatchesGridState extends State<MatchesGrid> {
                   ),
                 ),
               );
-            }, childCount: numUsers),
+            }, childCount: widget.usersGridCount),
           );
   }
 }

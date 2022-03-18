@@ -11,11 +11,24 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 
+
+/****************************************
+ * API info
+ *****************************************/
 const String kswad_URL = "swad.ugr.es";
 
 /* App key para hacer peticiones a Swad */
 const String kAppKey = 'alexflutter123';
 
+/*****
+ * APP INFO
+ */
+
+const kUsersPerPage = 18;
+
+/****************************************
+ * Styling
+ *****************************************/
 const Color kBackgroundColor = Color(0xff2A2A2A);
  
 const kHomeNameTextStyle = TextStyle(

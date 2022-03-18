@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
 import 'package:untitled/presentation/courses/tree_view.dart';
-import 'package:untitled/providers/course_index_provider.dart';
-import 'package:untitled/providers/coursesProvider.dart';
+import 'package:untitled/providers/course_providers/course_index_provider.dart';
+import 'package:untitled/providers/course_providers/coursesProvider.dart';
 
 class CoursesPage extends ConsumerWidget {
   CoursesPage({

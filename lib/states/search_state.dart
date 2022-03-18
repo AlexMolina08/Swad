@@ -25,7 +25,7 @@ class SearchLoading extends SearchState {
 class SearchLoaded extends SearchState {
 
   final userListResponse;
-  late List<dynamic> users ;
+  late List<dynamic> users;
   final int numUsers;
 
 
@@ -34,7 +34,7 @@ class SearchLoaded extends SearchState {
    /// Inicializar variable con el numero de usuarios encontrados en la búsqueda
    /// si numUsers es < 0 (ocurre cuando no encuentra matches)
    /// se inicializa a 0
-   : numUsers = numUsers <= 0 ? 0 : numUsers
+   : numUsers = (numUsers <= 0) ? 0 : numUsers
    {
 
      print("\n\nNº MATCHES : $numUsers\n\n");

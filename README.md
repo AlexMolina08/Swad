@@ -1,7 +1,5 @@
 # Swad
+iOS and Android Swad frontend
 
-Swad app for iOS and Android
-
-## Getting Started
 
 

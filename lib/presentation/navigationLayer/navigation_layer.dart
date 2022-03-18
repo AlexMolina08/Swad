@@ -10,7 +10,7 @@ import 'package:untitled/presentation/home/home.dart';
 import 'package:untitled/presentation/search/search_page.dart';
 import 'package:untitled/presentation/user/user_data_page.dart';
 import 'widgets.dart';
-import 'package:untitled/providers/page_index_provider.dart';
+import 'package:untitled/providers/navigation_providers/page_index_provider.dart';
 
 GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
 

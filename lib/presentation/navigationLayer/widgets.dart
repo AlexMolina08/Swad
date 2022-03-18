@@ -3,7 +3,7 @@ import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:untitled/providers/page_index_provider.dart';
+import 'package:untitled/providers/navigation_providers/page_index_provider.dart';
 import 'package:untitled/utilities/constants.dart' as constants;
 
 class SwadNavBar extends ConsumerWidget {

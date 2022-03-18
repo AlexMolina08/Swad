@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/models/course_model.dart';
 import 'package:untitled/presentation/home/widgets.dart';
-import 'package:untitled/providers/auth_provider.dart';
-import 'package:untitled/providers/coursesProvider.dart';
-import 'package:untitled/providers/page_index_provider.dart';
+import 'package:untitled/providers/auth_providers/auth_provider.dart';
+import 'package:untitled/providers/course_providers/coursesProvider.dart';
+import 'package:untitled/providers/navigation_providers/page_index_provider.dart';
 import 'package:untitled/states/auth_state.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
