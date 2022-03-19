@@ -6,6 +6,6 @@ import 'package:untitled/states/search_state.dart';
 
 /// Notifier del estado de la búsqueda
 /// autoDispose para borrar de memoria cuando no sea necesitado
-final searchNotifierProvider = StateNotifierProvider.autoDispose <SearchNotifier,SearchState>( (ref) {
+final searchNotifierProvider = StateNotifierProvider <SearchNotifier,SearchState>( (ref) {
   return SearchNotifier(SwadRepository(ref.read));
 });

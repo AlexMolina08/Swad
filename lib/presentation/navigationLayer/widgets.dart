@@ -17,7 +17,7 @@ class SwadNavBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DotNavigationBar(
       enableFloatingNavBar: true,
-      backgroundColor: const Color(0xfffafafa),
+      backgroundColor: const Color(0xff004c8c),
       dotIndicatorColor: Colors.transparent,
       onTap: onTap,
       // obtener el index actual

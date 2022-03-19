@@ -24,7 +24,8 @@ const String kAppKey = 'alexflutter123';
  * APP INFO
  */
 
-const kUsersPerPage = 18;
+/// Maximo numero de usuarios renderizados
+const kUsersPerPage = 40;
 
 /****************************************
  * Styling

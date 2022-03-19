@@ -17,6 +17,7 @@ class CourseIndexNotifier extends ChangeNotifier {
   }
 }
 
+
 final courseIndexProvider = ChangeNotifierProvider<CourseIndexNotifier>(
       (ref) => CourseIndexNotifier(0), // al inicio , el index es 0
 );

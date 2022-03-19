@@ -1,76 +1,123 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:untitled/models/HideNavBar.dart';
+import 'package:untitled/models/user_model.dart';
 import 'package:untitled/presentation/search/explore_appbar.dart';
-import 'package:untitled/providers/search_providers/search_notifier.dart';
 import 'package:untitled/providers/search_providers/search_provider.dart';
 import 'package:untitled/states/search_state.dart';
-import 'matches_grid.dart';
 import 'package:untitled/utilities/constants.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
-  SearchPage({Key? key}) : super(key: key);
+
+
+  SearchPage() ;
 
   @override
   SearchPageState createState() => SearchPageState();
 }
 
 class SearchPageState extends ConsumerState<SearchPage> {
-  var scrollController = ScrollController();
-  var usersGridsCount ;
+  /// ---
+  var usersGrids =  [];
+  var controller;
+
+  @override
+  void didChangeDependencies() {
+    //super.dependOnInheritedWidgetOfExactType();
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
-    // TODO: implement initState
+
+    ref.read(hideNavBarProvider).controller.addListener(() {
+
+      SearchState state = ref.read(searchNotifierProvider);
+
+      /// combrobar si se ha llegado al final del scrollview
+      if (controller.position.pixels == controller.position.maxScrollExtent
+          && state is SearchLoaded) {
+
+        if(usersGrids.length < state.numUsers){
+          /// comprobar si quedan grids por mostrar
+          int itemsLeft = state.numUsers - usersGrids.length;
+
+          /// añadir más items a la vista (dependiendo de los que falten añadirlos todos
+          /// o kUsersPerPage)
+          List<dynamic> nextItems ;
+
+          if(itemsLeft < kUsersPerPage){
+
+            nextItems = List<dynamic>.from(state.users).sublist(usersGrids.length-1);
+
+            print("ITEMS::: ${nextItems.runtimeType}");
+
+          }else{
+
+            nextItems = List<dynamic>.from(state.users).sublist(
+                usersGrids.length-1 , /// inicio
+                (usersGrids.length-1)+kUsersPerPage); /// fin
+
+            print("ITEMS::: ${nextItems.runtimeType}");
+
+
+          }
+
+          usersGrids.insertAll(usersGrids.length,nextItems);
+
+          setState(() {});
+
+        }
+
+
+      }
+
+
+
+    });
+
     super.initState();
   }
 
-  /// filtro de busqueda en la searchBar
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final searchState = ref.watch(searchNotifierProvider);
+    SearchState searchState = ref.watch(searchNotifierProvider);
+
+    controller = ref.watch(hideNavBarProvider).controller;
 
     /// Se llama a findUserProvider para obtener coincidencias con el filtro actual
     return Scaffold(
       body: CustomScrollView(
-        controller: scrollController,
-        //physics: BouncingScrollPhysics(),
+        controller: controller,
         slivers: [
           ExploreAppBar(
             onSubmitted: (String currentFilter) async {
+              /// limpiar buffer con la lista visible (usersGrid)
+              if (usersGrids.isNotEmpty) usersGrids.clear();
 
-              var currentSearchState = ref
-                  .read(searchNotifierProvider.notifier);
-
-              await currentSearchState
+              /// Llamar a Find en la API
+              await ref
+                  .read(searchNotifierProvider.notifier)
                   .find("0", "0", currentFilter);
-
-              if(searchState is SearchLoaded)
-                setState(() => usersGridsCount = 18);
-
-
 
             },
           ),
           SliverToBoxAdapter(
-            child: (searchState is SearchLoaded) ? Text("NumUsers: ${searchState.numUsers},UsersGridCount:${usersGridsCount}")
-                : Text('')
-          ),
-          showGridView(searchState),
+              child: (searchState is SearchLoaded)
+                  ? Text(
+                      "NumUsers: ${searchState.numUsers},UsersGridCount:${usersGrids.length}")
+                  : Text('')),
+          showSearchView(searchState),
         ],
       ),
     );
   }
 
-  /// Mostrar un grid view con los usuarios que coinciden con la búsqueda.
   /// Comprobar el estado actual de la búsqueda y devolver widget adecuado
-  Widget showGridView(SearchState state) {
+  Widget showSearchView(SearchState state) {
     switch (state.runtimeType) {
       case SearchLoading:
         return const SliverToBoxAdapter(
@@ -89,34 +136,75 @@ class SearchPageState extends ConsumerState<SearchPage> {
       case SearchLoaded:
         var searchResult = state as SearchLoaded;
 
-        /// listener: Escuchar cuando se ha llegado al final del gridview
-        /// y quedan más resultados por cargar
 
-        scrollController.addListener(() {
 
-          if (scrollController.position.pixels ==
-                  scrollController.position.maxScrollExtent &&
-              usersGridsCount < searchResult.numUsers) {
-            if (searchResult.numUsers - usersGridsCount < kUsersPerPage) {
-              /// si no podemos añadir 18 (valor de kUsersPerPage),
-              /// establecer el numero de items disponibles
-              setState(() {
-                print("*** USERS GRID COUNT: $usersGridsCount ***");
-                usersGridsCount +=  searchResult.numUsers - usersGridsCount;
-              });
+        if(searchResult.users.isNotEmpty){
+
+          if(usersGrids.isEmpty) {
+            /// comprobar si la lista está vacia y su tamaño
+            if (searchResult.numUsers < kUsersPerPage) {
+              /// añadir todos los usuarios a la lista de grids
+              usersGrids = List<dynamic>.from(searchResult.users);
             } else {
-              /// aumentar usersGridsCount
-              setState(() {
-                print("*** USERS GRID COUNT: $usersGridsCount ***");
-                usersGridsCount += kUsersPerPage;
-              });
+              /// añadir los n primeros usuarios a la lista de grids
+              usersGrids = List<dynamic>.from(searchResult.users).sublist(0, kUsersPerPage);
             }
+            setState((){});
           }
-        });
 
-        return MatchesGrid(
-            searchResult: state as SearchLoaded,
-            usersGridCount: usersGridsCount);
+          /// SLIVER GRID
+          return SliverGrid(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 150.0,
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
+              childAspectRatio: (MediaQuery.of(context).size.width /
+                  MediaQuery.of(context).size.height) *
+                  2,
+            ),
+
+            /// metodo para renderizar cada elemento de la lista en el gridview
+            delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  var user = User.fromJson(usersGrids[index]);
+
+                  return Container(
+                    child: GridTile(
+                      footer: Text(
+                        "${user.firstName} ${user.surName1} ${user.surName2}",
+                        textAlign: TextAlign.center,
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: user.photoUrl != null
+                            ? Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: NetworkImage(user.photoUrl),
+                          ),
+                        )
+                            : Image(
+                            image:
+                            AssetImage('resources/no_user_photo.png'),
+                            width: MediaQuery.of(context).size.width / 5,
+                            height: MediaQuery.of(context).size.height / 5),
+                      ),
+                    ),
+                  );
+                }, childCount: usersGrids.length),
+          );
+
+
+
+        }else{
+          return const SliverToBoxAdapter(
+            child: Text("Nada por aquí"),
+          );
+        }
+
+        ///##################################################################
+        ///##################################################################
 
       default:
         return const SliverToBoxAdapter(
@@ -124,4 +212,24 @@ class SearchPageState extends ConsumerState<SearchPage> {
         );
     }
   }
+
 }
+
+/**
+ *
+ *
+ * /// listener: Escuchar cuando se ha llegado al final del gridview
+ * /// y quedan más resultados por cargar
+   scrollController.addListener(() {
+    if (scrollController.position.pixels ==
+    scrollController.position.maxScrollExtent &&
+    usersGridsCount < searchResult.numUsers) {
+    if (searchResult.numUsers - usersGridsCount < kUsersPerPage) {
+    /// si no podemos añadir 18 (valor de kUsersPerPage),
+    /// establecer el numero de items disponibles
+
+    } else {
+
+    }
+    }
+ */
