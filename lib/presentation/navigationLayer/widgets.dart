@@ -1,10 +1,7 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:untitled/providers/navigation_providers/page_index_provider.dart';
-import 'package:untitled/utilities/constants.dart' as constants;
 
 class SwadNavBar extends ConsumerWidget {
   const SwadNavBar({Key? key, required this.onTap}) : super(key: key);
@@ -16,8 +13,14 @@ class SwadNavBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DotNavigationBar(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.blue.shade800.withOpacity(0.9),
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
       enableFloatingNavBar: true,
-      backgroundColor: const Color(0xff004c8c),
+      backgroundColor: Colors.transparent,/*Color(0xff004c8c)*/
       dotIndicatorColor: Colors.transparent,
       onTap: onTap,
       // obtener el index actual
@@ -26,6 +29,7 @@ class SwadNavBar extends ConsumerWidget {
     );
   }
 }
+
 /// Return a list with navBar icons
 List<DotNavigationBarItem> navigationBarIcons() {
   const Color iconColor = Colors.white;
@@ -37,15 +41,13 @@ List<DotNavigationBarItem> navigationBarIcons() {
       ),
     ),
     DotNavigationBarItem(
-      unselectedColor: Colors.grey,
-      icon: const Icon(Icons.search),
-      selectedColor: Colors.blue
-    ),
+        unselectedColor: Colors.grey,
+        icon: const Icon(Icons.search),
+        selectedColor: Colors.blue),
     DotNavigationBarItem(
         unselectedColor: Colors.grey,
         icon: const Icon(Icons.book),
-      selectedColor: Colors.amber
-    ),
+        selectedColor: Colors.amber),
     DotNavigationBarItem(
       unselectedColor: Colors.grey,
       icon: const Icon(Icons.person),
