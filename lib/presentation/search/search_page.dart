@@ -28,56 +28,20 @@ class SearchPageState extends ConsumerState<SearchPage> {
 
     /// Listener para comprobar direccion scroll user y actualizar visibilidad
     /// navBar
-    _controller.addListener(() {
-      if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
-        /// scrolling up
-        ref.read(navBarVisibilityProvider).hide();
-      }
-      if (_controller.position.userScrollDirection == ScrollDirection.forward) {
-        /// scrolling down
-        ref.read(navBarVisibilityProvider).show();
-      }
-    });
-
-    /// Listener para saber si se ha llegado al final del scrollView
-    /// añadir más elementos si es posible
-    /*_controller.addListener(() {
-      SearchState state = ref.read(searchNotifierProvider);
-
-      /// combrobar si se ha llegado al final del scrollview
-      if (_controller.position.pixels == _controller.position.maxScrollExtent &&
-          state is SearchLoaded) {
-        if (usersGrids.length < state.numUsers) {
-          /// comprobar si quedan grids por mostrar
-          int itemsLeft = state.numUsers - usersGrids.length;
-
-          /// añadir más items a la vista (dependiendo de los que falten añadirlos todos
-          /// o kUsersPerPage)
-          List<dynamic> nextItems;
-
-          if (itemsLeft < kUsersPerPage) {
-            nextItems =
-                List<dynamic>.from(state.users).sublist(usersGrids.length - 1);
-
-            print("ITEMS::: ${nextItems.runtimeType}");
-          } else {
-            nextItems = List<dynamic>.from(state.users).sublist(
-                usersGrids.length - 1,
-
-                /// inicio
-                (usersGrids.length - 1) + kUsersPerPage);
-
-            /// fin
-
-            print("ITEMS::: ${nextItems.runtimeType}");
-          }
-
-          usersGrids.insertAll(usersGrids.length, nextItems);
-
-          setState(() {});
+    _controller.addListener(
+      () {
+        if (_controller.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          /// scrolling up
+          ref.read(navBarVisibilityProvider).hide();
         }
-      }
-    });*/
+        if (_controller.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          /// scrolling down
+          ref.read(navBarVisibilityProvider).show();
+        }
+      },
+    );
   }
 
   @override
@@ -98,8 +62,10 @@ class SearchPageState extends ConsumerState<SearchPage> {
 
     /// Se llama a findUserProvider para obtener coincidencias con el filtro actual
     return Scaffold(
+      backgroundColor: Color(0xfff0f0f0),
       body: CustomScrollView(
         controller: _controller,
+        physics: BouncingScrollPhysics(),
         slivers: [
           ExploreAppBar(
             onSubmitted: (String currentFilter) async {
@@ -118,10 +84,11 @@ class SearchPageState extends ConsumerState<SearchPage> {
                       "NumUsers: ${searchState.numUsers},UsersGridCount:${usersGrids.length}")
                   : Text('')),
           showSearchView(searchState),
-
           SliverToBoxAdapter(
-                child: loadModeButton(searchState) ?? Container(width: 0,)),
-
+              child: loadModeButton(searchState) ??
+                  Container(
+                    width: 0,
+                  )),
         ],
       ),
     );
@@ -169,7 +136,7 @@ class SearchPageState extends ConsumerState<SearchPage> {
               crossAxisSpacing: 10.0,
               childAspectRatio: (MediaQuery.of(context).size.width /
                       MediaQuery.of(context).size.height) *
-                  2,
+                  1.4,
             ),
 
             /// metodo para renderizar cada elemento de la lista en el gridview
@@ -178,29 +145,7 @@ class SearchPageState extends ConsumerState<SearchPage> {
               if (index < usersGrids.length) {
                 var user = User.fromJson(usersGrids[index]);
 
-                return Container(
-                  child: GridTile(
-                    footer: Text(
-                      "${user.firstName} ${user.surName1} ${user.surName2}",
-                      textAlign: TextAlign.center,
-                    ),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: user.photoUrl != null
-                          ? Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                backgroundImage: NetworkImage(user.photoUrl),
-                              ),
-                            )
-                          : Image(
-                              image: AssetImage('resources/no_user_photo.png'),
-                              width: MediaQuery.of(context).size.width / 5,
-                              height: MediaQuery.of(context).size.height / 5),
-                    ),
-                  ),
-                );
+                return UserGrid(user: user);
               }
             }, childCount: usersGrids.length + 1),
           );
@@ -223,42 +168,93 @@ class SearchPageState extends ConsumerState<SearchPage> {
   Widget? loadModeButton(SearchState state) {
     if (state is SearchLoaded && usersGrids.length < state.numUsers) {
       return Container(
-          height: 40.0,
-          width: MediaQuery.of(context).size.width,
-          child: Center(
-            child: TextButton(
-              onPressed: () {
-                /// comprobar si quedan grids por mostrar
-                int itemsLeft = state.numUsers - usersGrids.length;
+        height: 40.0,
+        width: MediaQuery.of(context).size.width,
+        child: Center(
+          child: TextButton(
+            onPressed: () {
+              /// comprobar si quedan grids por mostrar
+              int itemsLeft = state.numUsers - usersGrids.length;
 
-                /// añadir más items a la vista (dependiendo de los que falten añadirlos todos
-                /// o kUsersPerPage)
-                List<dynamic> nextItems;
+              /// añadir más items a la vista (dependiendo de los que falten añadirlos todos
+              /// o kUsersPerPage)
+              List<dynamic> nextItems;
 
-                if (itemsLeft < kUsersPerPage) {
-                  nextItems =
-                      List<dynamic>.from(state.users).sublist(usersGrids.length - 1);
+              if (itemsLeft < kUsersPerPage) {
+                nextItems = List<dynamic>.from(state.users)
+                    .sublist(usersGrids.length - 1);
 
-                  print("ITEMS::: ${nextItems.runtimeType}");
-                } else {
-                  nextItems = List<dynamic>.from(state.users).sublist(
-                      usersGrids.length - 1,
+                print("ITEMS::: ${nextItems.runtimeType}");
+              } else {
+                nextItems = List<dynamic>.from(state.users).sublist(
+                    usersGrids.length - 1,
 
-                      /// inicio
-                      (usersGrids.length - 1) + kUsersPerPage);
+                    /// inicio
+                    (usersGrids.length - 1) + kUsersPerPage);
 
-                  /// fin
+                /// fin
 
-                  print("ITEMS::: ${nextItems.runtimeType}");
-                }
+                print("ITEMS::: ${nextItems.runtimeType}");
+              }
 
-                usersGrids.insertAll(usersGrids.length, nextItems);
+              usersGrids.insertAll(usersGrids.length, nextItems);
 
-                setState(() {});
-              },
-              child: Text("Cargar más"),
-            ),
-          ));
+              setState(() {});
+            },
+            child: const Text("Cargar más", style: kLoadMoreTextStyle),
+          ),
+        ),
+      );
     }
+  }
+}
+
+class UserGrid extends StatelessWidget {
+  const UserGrid({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey,width: 0.15),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 0.4,
+              blurRadius: 0.4,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+          borderRadius: BorderRadius.circular(10.0)),
+      child: ClipRRect(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                user.photoUrl != null
+                    ? CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: NetworkImage(user.photoUrl),
+                      )
+                    : const CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Image(
+                          image: AssetImage('resources/no_user_photo.png'),
+                        ),
+                      ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

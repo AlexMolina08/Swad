@@ -9,6 +9,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 
 
@@ -53,5 +54,12 @@ const courseItemColors = [
   GradientColors.aqua,
 ];
 
+const kLoadMoreTextStyle = TextStyle(
+  color: Color(0xffCCCCCC),
+  fontSize: 15.0,
+  fontWeight: FontWeight.bold
+);
 
 const kNavBarHeight = 60.0;
+
+

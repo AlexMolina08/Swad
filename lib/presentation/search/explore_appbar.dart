@@ -10,7 +10,6 @@ class ExploreAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-
       floating: true,
       backgroundColor: Colors.white,
       automaticallyImplyLeading: false,

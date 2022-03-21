@@ -6,7 +6,8 @@ enum SwadRequest{
   getCourses,
   getDirectoryTree,
   getFile,
-  findUsers
+  findUsers,
+  getNotifications
 }
 
 

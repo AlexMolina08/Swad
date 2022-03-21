@@ -6,10 +6,12 @@ import 'package:untitled/presentation/home/widgets.dart';
 import 'package:untitled/providers/auth_providers/auth_provider.dart';
 import 'package:untitled/providers/course_providers/coursesProvider.dart';
 import 'package:untitled/providers/navigation_providers/page_index_provider.dart';
+import 'package:untitled/providers/notifications_provider/get_notifications_provider.dart';
 import 'package:untitled/states/auth_state.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class HomePage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     print("HOME BUILD");
@@ -21,6 +23,11 @@ class HomePage extends StatelessWidget {
             // obtenemos valor del provider con la auntentificacion
             // watch tambien vuelve a hacer build de home widget
             final _authState = ref.watch(authNotifierProvider);
+
+            ///----
+            final _notifications = ref.watch(notificationsProvider);
+            ///----
+
             // obtener lista asignaturas
             AsyncValue<List<Course>> courses = ref.watch(courseListProvider);
 
@@ -105,52 +112,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-/**
-    Consumer(
-    builder: (context, ref, child) {
-    final _authState = ref.watch(authNotifierProvider);
-
-    // obtener lista asignaturas
-    AsyncValue<List<Course>> courses = ref.watch(courseListProvider);
-
-    if (_authState is AuthLoaded) {
-    final imageUrl = _authState.auth.userPhoto;
-    return Column(
-    children: [
-    Container(
-    // imagen
-    width: 100,
-    height: 100,
-    decoration: BoxDecoration(
-    image:
-    DecorationImage(image: NetworkImage(imageUrl!))),
-    ),
-    // datos
-    UserDataWidget(
-    _authState.auth.userFirstname,
-    _authState.auth.userSurname1,
-    _authState.auth.userSurname2,
-    _authState.auth.userRole,
-    ),
-
-    // asignaturas
-    courses.when(
-    data: (courses) {
-    return CarouselSlider(
-    options: CarouselOptions(height: 80.0),
-    items: coursesPanel(courses),
-    );
-    },
-    error: (err, stack) => Text('Error $err'),
-    loading: () => const CircularProgressIndicator(
-    backgroundColor: Colors.yellow,
-    ),
-    ),
-    ],
-    );
-    } else
-    return UserDataWidget("?", "?", "?", "?");
-    },
-    ),
- */

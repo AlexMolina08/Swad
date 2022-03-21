@@ -154,6 +154,23 @@ String getSoapRequest({required SwadRequest request , required List<String> para
 
     }break;
 
+    case SwadRequest.getNotifications : {
+
+      String wsKey = parameters.first;
+      var date = '000000000000';
+
+      soapRequest = '''<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:swad">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:getNotifications>
+         <wsKey>$wsKey</wsKey>
+         <beginTime>0</beginTime>
+      </urn:getNotifications>
+   </soapenv:Body>
+</soapenv:Envelope>''';
+
+    }break;
+
   }
 
   return soapRequest;

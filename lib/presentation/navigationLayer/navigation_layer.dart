@@ -44,8 +44,6 @@ class NavigationLayerState extends ConsumerState<NavigationLayer> {
       child: SafeArea(
         child: Scaffold(
           extendBody: true,
-          backgroundColor: Colors.white,
-
           /// BOTTOM NAVIGATION BAR ANIMADA
           bottomNavigationBar: AnimatedContainer(
             duration: Duration(milliseconds: 250),

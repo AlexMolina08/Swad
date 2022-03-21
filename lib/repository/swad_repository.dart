@@ -216,6 +216,72 @@ class SwadRepository {
       return SearchError("Inicia sesión");
     }
   }
+
+  Future<String> getNotifications() async{
+    var ref = read(authNotifierProvider);
+    var xmlResponse = '';
+    String wsKey = "";
+    Xml2Json xml2json = Xml2Json();
+    var data;
+
+    if (ref is AuthLoaded) {
+      wsKey = ref.auth.wsKey!;
+
+      try {
+        // obtener la peteicion SOAP
+        String request = utils.getSoapRequest(
+            request: SwadRequest.getNotifications, parameters: [wsKey]);
+
+        /*** PETICION SOAP ***/
+
+        http.Response response =
+            await http.post(Uri.https(constant.kswad_URL, ""),
+            headers: {
+              'content-type': 'text/xmlc',
+              'SOAPAction': 'https://www.swad.ugr.es/api/#getNotifications'
+            },
+            body: utf8.encode(request));
+
+         xmlResponse = response.body;
+
+        /*if (response.statusCode == 200) {
+          //OK
+          xml2json.parse(xmlResponse);
+          var jsonResponse = xml2json.toParker();
+          data = jsonDecode(jsonResponse);
+        } else if (response.statusCode == 500) {
+          throw Exception("SWAD REPOSITORY : getCourseList ha fallado");
+        }*/
+      } on Exception catch (e) {
+        rethrow;
+      }
+      print(xmlResponse);
+      return xmlResponse;
+    }
+
+    /*data = data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['swad:getCoursesOutput'];
+
+    numCourses = int.parse(data['numCourses']);
+
+    data = data['coursesArray']['item'];
+
+    Course c = Course.fromJson(data);
+
+    // Convertir la lista en formato JSON a una List<Course> (lista de asignaturas)
+    if (numCourses! > 1) {
+      for (int i = 0; i < numCourses!; ++i) {
+        _courseList.add(Course.fromJson(data[i]));
+      }
+    } else
+      _courseList.add(Course.fromJson(data));
+
+    /// establecer por defecto primer curso
+    currentCourseCode = _courseList.first.courseCode;*/
+
+    /// devolver la lista
+    return xmlResponse;
+  }
+
 }
 
 
