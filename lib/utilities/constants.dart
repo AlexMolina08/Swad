@@ -19,7 +19,7 @@ import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 const String kswad_URL = "swad.ugr.es";
 
 /* App key para hacer peticiones a Swad */
-const String kAppKey = 'alexflutter123';
+const String kAppKey = '';
 
 /*****
  * APP INFO
